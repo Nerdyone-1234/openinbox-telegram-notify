@@ -6,7 +6,7 @@ the self-hosted mail service on Cloudflare Workers.
 ```
 📬 me@ · from someone@example.org
 Subject: Hello there
-Open in OpenInbox
+Open mail
 ```
 
 - You pick which addresses notify you. The rest stay quiet.
@@ -38,6 +38,7 @@ has seen and sends one Telegram message for every newly delivered mail to an add
    ```
 
 `--dry-run` prints the messages instead of sending them and does not save anything.
+Set `MAIL_LINK` if the link in the message should open another web UI.
 Use `OITN_CONFIG=/path/to/file.env` to point to another config file.
 
 ## Security

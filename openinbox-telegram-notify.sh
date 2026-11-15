@@ -24,6 +24,7 @@ set -a; . "$CONFIG"; set +a
 : "${OPENINBOX_URL:?missing in config}" "${OPENINBOX_EMAIL:?missing in config}" "${OPENINBOX_PASSWORD:?missing in config}"
 : "${TELEGRAM_BOT_TOKEN:?missing in config}" "${TELEGRAM_CHAT_ID:?missing in config}" "${WATCH:?missing in config}"
 OPENINBOX_URL=${OPENINBOX_URL%/}
+MAIL_LINK=${MAIL_LINK:-$OPENINBOX_URL/mail}
 STATE_DIR=${STATE_DIR:-/var/lib/openinbox-telegram-notify}
 STATE="$STATE_DIR/last-id"
 JAR="$STATE_DIR/cookies"
@@ -80,10 +81,10 @@ jq -c --argjson last "$LAST" --arg watch "$WATCH" '
          | . + {box: $to}]
   | sort_by(.id) | .[]' <<<"$FLOW" |
 while read -r mail; do
-  TEXT=$(jq -r --arg app "$OPENINBOX_URL" '
+  TEXT=$(jq -r --arg link "$MAIL_LINK" '
     "📬 <b>\(.box | split("@")[0] | @html)@</b> · from <code>\(.from | @html)</code>\n"
     + "Subject: \((.subject // "(no subject)") | @html)\n"
-    + "<a href=\"\($app)/mail\">Open in OpenInbox</a>"' <<<"$mail")
+    + "<a href=\"\($link | @html)\">Open mail</a>"' <<<"$mail")
   send "$TEXT"
 done
 
