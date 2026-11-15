@@ -1,0 +1,8 @@
+[Unit]
+Description=OpenInbox: Telegram message for new mail
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/openinbox-telegram-notify.sh
