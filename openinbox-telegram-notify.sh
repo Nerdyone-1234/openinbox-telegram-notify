@@ -67,7 +67,8 @@ LAST=$(cat "$STATE")
 
 send() {
   if (( DRY_RUN )); then printf '%s\n---\n' "$1"; return; fi
-  curl -sf -o /dev/null --max-time 15 "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+  # The bot token goes in through a curl config on a pipe, so it never shows up in ps.
+  curl -sf -o /dev/null --max-time 15 -K <(printf 'url = "https://api.telegram.org/bot%s/sendMessage"\n' "$TELEGRAM_BOT_TOKEN") \
     --data-urlencode "chat_id=$TELEGRAM_CHAT_ID" --data-urlencode "text=$1" \
     -d parse_mode=HTML -d disable_web_page_preview=true || echo "telegram send failed" >&2
 }
